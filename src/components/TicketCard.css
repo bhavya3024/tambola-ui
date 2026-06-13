@@ -1,0 +1,99 @@
+.ticket-card {
+  padding: var(--space-md);
+  min-width: 0;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.ticket-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ticket-progress {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.ticket-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+
+.ticket-row {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 3px;
+}
+
+.ticket-cell {
+  position: relative;
+  aspect-ratio: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  transition: all var(--transition-normal);
+  user-select: none;
+}
+
+.ticket-cell.empty {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.ticket-cell.marked {
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.2), rgba(0, 229, 255, 0.15));
+  color: var(--emerald);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  animation: numberPop 0.3s ease;
+}
+
+.mark-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 6px var(--emerald-glow);
+}
+
+.ticket-progress-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  margin-top: var(--space-sm);
+  overflow: hidden;
+}
+
+.ticket-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--emerald));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+@media (max-width: 480px) {
+  .ticket-cell {
+    font-size: 0.7rem;
+    aspect-ratio: 1.1;
+  }
+}

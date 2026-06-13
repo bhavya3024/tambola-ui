@@ -1,0 +1,99 @@
+.lobby-hero {
+  text-align: center;
+  padding: var(--space-2xl) 0 var(--space-xl);
+}
+
+.lobby-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+.lobby-hero p {
+  font-size: 1.1rem;
+}
+
+/* Action cards */
+.lobby-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.action-card {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.action-icon {
+  font-size: 2.5rem;
+}
+
+.action-card h3 {
+  font-size: 1.2rem;
+}
+
+.action-card p {
+  font-size: 0.9rem;
+}
+
+.join-form {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.join-input {
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.create-buttons {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+/* Games grid */
+.lobby-games {
+  margin-bottom: var(--space-2xl);
+}
+
+.lobby-games h2 {
+  margin-bottom: var(--space-lg);
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+@media (max-width: 640px) {
+  .lobby-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .lobby-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .join-form {
+    flex-direction: column;
+  }
+
+  .games-grid {
+    grid-template-columns: 1fr;
+  }
+}

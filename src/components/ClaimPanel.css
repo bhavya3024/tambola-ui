@@ -1,0 +1,73 @@
+.claim-panel {
+  padding: var(--space-lg);
+}
+
+.claim-title {
+  margin-bottom: var(--space-md);
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.claim-patterns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.claim-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all var(--transition-normal);
+}
+
+.claim-item:hover:not(.claimed) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.claim-item.claimed {
+  opacity: 0.6;
+  background: rgba(240, 192, 64, 0.05);
+  border-color: rgba(240, 192, 64, 0.15);
+}
+
+.claim-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.claim-icon {
+  font-size: 1.3rem;
+}
+
+.claim-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.claim-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.claim-winner {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.claim-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}

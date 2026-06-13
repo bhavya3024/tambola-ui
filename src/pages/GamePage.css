@@ -1,0 +1,265 @@
+/* ─── Game Header ────────────────────────────────────────── */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.game-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.game-code-display {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: opacity var(--transition-fast);
+}
+
+.game-code-display:hover {
+  opacity: 0.8;
+}
+
+.copy-hint {
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.game-code-display:hover .copy-hint {
+  opacity: 1;
+}
+
+.game-status-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 4px;
+}
+
+.connection-dot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.dot-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-indicator.online {
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald-glow);
+}
+
+.dot-indicator.offline {
+  background: var(--error);
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.3);
+}
+
+.host-controls {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* ─── Waiting State ──────────────────────────────────────── */
+.waiting-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.waiting-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.waiting-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.join-prompt {
+  padding: var(--space-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ticket-gen-card {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ticket-gen-controls {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-end;
+}
+
+.ticket-gen-controls .input-group {
+  flex: 0 0 100px;
+}
+
+.tickets-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ─── Playing State ──────────────────────────────────────── */
+.playing-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.playing-top {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.playing-bottom {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.section-title {
+  margin-bottom: var(--space-md);
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ─── Completed State ────────────────────────────────────── */
+.game-completed {
+  position: relative;
+  overflow: hidden;
+}
+
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  animation: confetti 4s ease-in forwards;
+}
+
+.completed-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  padding: var(--space-2xl) 0;
+}
+
+.completed-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+.winners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 800px;
+}
+
+.winner-card {
+  padding: var(--space-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.winner-icon {
+  font-size: 2rem;
+}
+
+.winner-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .waiting-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .playing-top {
+    grid-template-columns: 1fr;
+  }
+
+  .playing-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .tickets-preview,
+  .tickets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .game-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticket-gen-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ticket-gen-controls .input-group {
+    flex: 1;
+  }
+
+  .winners-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
