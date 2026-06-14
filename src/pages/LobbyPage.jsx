@@ -18,6 +18,7 @@ export default function LobbyPage() {
   const [createForm, setCreateForm] = useState({
     maxPlayers: 50,
     numberCallInterval: 10,
+    ticketsPerPlayer: 1,
   });
   const [creating, setCreating] = useState(false);
   const [joining, setJoining] = useState(false);
@@ -158,6 +159,31 @@ export default function LobbyPage() {
                         })
                       }
                     />
+                  </div>
+                  <div className="input-group">
+                    <label htmlFor="tickets-per-player-input">Tickets Per Player</label>
+                    <div className="tickets-slider-group">
+                      <input
+                        id="tickets-per-player-input"
+                        className="tickets-slider"
+                        type="range"
+                        min={1}
+                        max={6}
+                        value={createForm.ticketsPerPlayer}
+                        onChange={(e) =>
+                          setCreateForm({
+                            ...createForm,
+                            ticketsPerPlayer: parseInt(e.target.value) || 1,
+                          })
+                        }
+                      />
+                      <span className="tickets-count-badge">
+                        {createForm.ticketsPerPlayer} 🎫
+                      </span>
+                    </div>
+                    <span className="text-muted" style={{ fontSize: "0.8rem" }}>
+                      Every player gets the same number of tickets
+                    </span>
                   </div>
                   <div className="create-buttons">
                     <button

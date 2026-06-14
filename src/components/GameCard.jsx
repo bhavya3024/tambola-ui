@@ -41,6 +41,10 @@ export default function GameCard({ game }) {
             <span className="meta-icon">🏆</span>
             <span>{game.availablePatterns?.length || 5} patterns</span>
           </div>
+          <div className="meta-item">
+            <span className="meta-icon">🎫</span>
+            <span>{game.ticketsPerPlayer || 1} ticket{(game.ticketsPerPlayer || 1) > 1 ? "s" : ""}/player</span>
+          </div>
         </div>
 
         <div className="game-patterns">

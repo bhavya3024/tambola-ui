@@ -115,7 +115,7 @@ export function AuthProvider({ children }) {
     }
   }, [fetchUser]);
 
-  // Register
+  // Register — user must verify email before logging in
   const register = async (username, email, password, displayName) => {
     try {
       const res = await fetch(`${API_BASE}/register`, {
@@ -127,13 +127,26 @@ export function AuthProvider({ children }) {
       const data = await res.json();
 
       if (data.success) {
-        storeTokens(data.data.accessToken, data.data.refreshToken);
-        setUser(data.data.user);
-        showToast("Welcome to Tambola! 🎯", "success");
-        return { success: true };
+        return { success: true, message: data.message };
       }
 
       return { success: false, message: data.message };
+    } catch (err) {
+      return { success: false, message: "Network error. Please try again." };
+    }
+  };
+
+  // Resend verification email
+  const resendVerification = async (email) => {
+    try {
+      const res = await fetch(`${API_BASE}/resend-verification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      return { success: data.success, message: data.message };
     } catch (err) {
       return { success: false, message: "Network error. Please try again." };
     }
@@ -175,15 +188,52 @@ export function AuthProvider({ children }) {
     showToast("Logged out", "info");
   };
 
+  // Forgot password
+  const forgotPassword = async (email) => {
+    try {
+      const res = await fetch(`${API_BASE}/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      return { success: data.success, message: data.message };
+    } catch (err) {
+      return { success: false, message: "Network error. Please try again." };
+    }
+  };
+
+  // Reset password with token
+  const resetPassword = async (token, password) => {
+    try {
+      const res = await fetch(`${API_BASE}/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+
+      const data = await res.json();
+      return { success: data.success, message: data.message };
+    } catch (err) {
+      return { success: false, message: "Network error. Please try again." };
+    }
+  };
+
+  const getAccessToken = useCallback(() => getTokens().accessToken, []);
+
   const value = {
     user,
     loading,
     toast,
     login,
     register,
+    resendVerification,
+    forgotPassword,
+    resetPassword,
     logout,
     showToast,
-    getAccessToken: () => getTokens().accessToken,
+    getAccessToken,
   };
 
   return (

@@ -80,6 +80,65 @@
   gap: var(--space-lg);
 }
 
+/* Tickets slider */
+.tickets-slider-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.tickets-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.tickets-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 12px var(--gold-glow);
+  transition: transform var(--transition-fast);
+}
+
+.tickets-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.tickets-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.tickets-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  padding: 6px 12px;
+  background: var(--gold-glow);
+  color: var(--gold);
+  border: 1px solid rgba(240, 192, 64, 0.3);
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
   .lobby-hero h1 {
     font-size: 1.75rem;

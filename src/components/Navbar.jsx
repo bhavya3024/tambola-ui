@@ -24,6 +24,13 @@ export default function Navbar() {
                 🎮 {user.stats?.gamesPlayed || 0}
               </span>
             </div>
+            <button
+              className="btn btn-secondary btn-sm navbar-history-btn"
+              onClick={() => navigate("/history")}
+              title="Game History"
+            >
+              📜 History
+            </button>
             <div className="navbar-user">
               <div className="navbar-avatar">
                 {user.displayName?.charAt(0).toUpperCase()}

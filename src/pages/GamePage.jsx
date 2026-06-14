@@ -21,8 +21,6 @@ export default function GamePage() {
   const [game, setGame] = useState(null);
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ticketCount, setTicketCount] = useState(1);
-  const [generatingTickets, setGeneratingTickets] = useState(false);
 
   // Derived state
   const isHost = game && user && game.host?._id === user.id;
@@ -159,19 +157,8 @@ export default function GamePage() {
   const handleJoinGame = async () => {
     const { ok } = await post(`/api/games/${code}/join`);
     if (ok) {
-      showToast("Joined! 🎉", "success");
+      showToast("Joined! Tickets generated automatically 🎫", "success");
       fetchGame();
-    }
-  };
-
-  const handleGenerateTickets = async () => {
-    setGeneratingTickets(true);
-    const { ok } = await post(`/api/games/${code}/tickets`, {
-      count: ticketCount,
-    });
-    setGeneratingTickets(false);
-    if (ok) {
-      showToast(`${ticketCount} ticket(s) generated! 🎫`, "success");
       fetchTickets();
     }
   };
@@ -243,6 +230,11 @@ export default function GamePage() {
                       ? "Paused"
                       : game.status}
                   </span>
+                  {game.ticketsPerPlayer && (
+                    <span className="badge badge-gold">
+                      {game.ticketsPerPlayer} 🎫 per player
+                    </span>
+                  )}
                   <span className="connection-dot">
                     <span className={`dot-indicator ${connected ? "online" : "offline"}`} />
                     {connected ? "Connected" : "Disconnected"}
@@ -283,7 +275,11 @@ export default function GamePage() {
                     <div className="glass-card join-prompt">
                       <h3>Join this game?</h3>
                       <p className="text-muted">
-                        Enter the room and get your tickets.
+                        You'll automatically receive{" "}
+                        <strong className="text-gold">
+                          {game.ticketsPerPlayer} ticket{game.ticketsPerPlayer > 1 ? "s" : ""}
+                        </strong>{" "}
+                        when you join.
                       </p>
                       <button
                         className="btn btn-primary btn-block"
@@ -300,46 +296,15 @@ export default function GamePage() {
                   />
                 </div>
 
-                {/* Right: Tickets */}
+                {/* Right: Ticket preview (read-only, auto-generated) */}
                 <div className="waiting-right">
-                  {isPlayer && (
-                    <div className="glass-card ticket-gen-card">
-                      <h3>🎫 Get Your Tickets</h3>
+                  {isPlayer && tickets.length > 0 && (
+                    <div className="glass-card ticket-info-card">
+                      <h3>🎫 Your Tickets</h3>
                       <p className="text-muted">
-                        You have {tickets.length} ticket(s). Max 6 per player.
+                        You have <strong className="text-gold">{tickets.length}</strong> ticket
+                        {tickets.length > 1 ? "s" : ""} — auto-assigned when you joined.
                       </p>
-                      {tickets.length < 6 && (
-                        <div className="ticket-gen-controls">
-                          <div className="input-group">
-                            <label htmlFor="ticket-count-input">How many?</label>
-                            <input
-                              id="ticket-count-input"
-                              className="input"
-                              type="number"
-                              min={1}
-                              max={6 - tickets.length}
-                              value={ticketCount}
-                              onChange={(e) =>
-                                setTicketCount(
-                                  Math.min(
-                                    6 - tickets.length,
-                                    Math.max(1, parseInt(e.target.value) || 1)
-                                  )
-                                )
-                              }
-                            />
-                          </div>
-                          <button
-                            className="btn btn-primary"
-                            disabled={generatingTickets}
-                            onClick={handleGenerateTickets}
-                          >
-                            {generatingTickets
-                              ? "Generating..."
-                              : `Generate ${ticketCount} Ticket${ticketCount > 1 ? "s" : ""}`}
-                          </button>
-                        </div>
-                      )}
                     </div>
                   )}
 
@@ -461,7 +426,7 @@ export default function GamePage() {
                         <div className="winner-icon">{icons[pattern]}</div>
                         <h3>{labels[pattern]}</h3>
                         {winner ? (
-                          <span className="winner-name text-gold">🏆 {winner.toString()}</span>
+                          <span className="winner-name text-gold">🏆 {winner}</span>
                         ) : (
                           <span className="text-muted">Not claimed</span>
                         )}

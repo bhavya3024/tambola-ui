@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./AuthPage.css";
 
 export default function AuthPage({ mode = "login" }) {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, resendVerification, showToast } = useAuth();
 
   const [form, setForm] = useState({
     login: "",
@@ -16,6 +16,18 @@ export default function AuthPage({ mode = "login" }) {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [showResend, setShowResend] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  // Reset success state if user navigates back to login mode
+  useEffect(() => {
+    if (mode === "login") {
+      setRegistrationSuccess(false);
+      setErrors({});
+    }
+  }, [mode]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -52,6 +64,7 @@ export default function AuthPage({ mode = "login" }) {
     if (!validate()) return;
 
     setLoading(true);
+    setShowResend(false);
 
     let result;
     if (mode === "login") {
@@ -68,12 +81,92 @@ export default function AuthPage({ mode = "login" }) {
     setLoading(false);
 
     if (result.success) {
-      navigate("/");
+      if (mode === "login") {
+        navigate("/");
+      } else {
+        // Registration success — show verification message
+        setRegistrationSuccess(true);
+        setRegisteredEmail(form.email);
+      }
     } else {
+      // Check if error is about email verification
+      const msg = result.message?.toLowerCase() || "";
+      if (msg.includes("verify your email")) {
+        setShowResend(true);
+      }
       setErrors({ general: result.message });
     }
   };
 
+  const handleResend = async () => {
+    const email = mode === "login" ? form.login : form.email;
+    if (!email) {
+      showToast("Please enter your email first.", "error");
+      return;
+    }
+
+    setResendLoading(true);
+    const result = await resendVerification(email);
+    setResendLoading(false);
+    showToast(result.message || "Verification email sent!", "success");
+  };
+
+  // ─── Registration success view ──────────────────────────────
+  if (registrationSuccess) {
+    return (
+      <div className="auth-page">
+        <div className="auth-bg-shapes">
+          <div className="shape shape-1" />
+          <div className="shape shape-2" />
+          <div className="shape shape-3" />
+        </div>
+
+        <div className="auth-container animate-slide-up">
+          <div className="auth-header">
+            <div className="auth-logo">📧</div>
+            <h1 className="auth-title">Check Your Email</h1>
+            <p className="auth-subtitle">
+              We've sent a verification link to
+            </p>
+            <p className="auth-email-highlight">{registeredEmail}</p>
+          </div>
+
+          <div className="verify-instructions">
+            <div className="verify-step">
+              <span className="step-number">1</span>
+              <span>Open your email inbox</span>
+            </div>
+            <div className="verify-step">
+              <span className="step-number">2</span>
+              <span>Click the verification link</span>
+            </div>
+            <div className="verify-step">
+              <span className="step-number">3</span>
+              <span>Come back and sign in!</span>
+            </div>
+          </div>
+
+          <div className="auth-footer" style={{ marginTop: "1.5rem" }}>
+            <p className="text-muted" style={{ fontSize: "0.85rem", marginBottom: "1rem" }}>
+              Didn't receive the email? Check your spam folder or{" "}
+              <button
+                className="link-btn"
+                onClick={handleResend}
+                disabled={resendLoading}
+              >
+                {resendLoading ? "sending..." : "resend it"}
+              </button>
+            </p>
+            <Link to="/login" className="btn btn-primary btn-lg btn-block">
+              Go to Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Login / Register form ──────────────────────────────────
   return (
     <div className="auth-page">
       <div className="auth-bg-shapes">
@@ -95,7 +188,19 @@ export default function AuthPage({ mode = "login" }) {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           {errors.general && (
-            <div className="auth-error-banner">{errors.general}</div>
+            <div className="auth-error-banner">
+              {errors.general}
+              {showResend && (
+                <button
+                  type="button"
+                  className="resend-btn"
+                  onClick={handleResend}
+                  disabled={resendLoading}
+                >
+                  {resendLoading ? "Sending..." : "Resend Verification Email"}
+                </button>
+              )}
+            </div>
           )}
 
           {mode === "login" ? (
@@ -129,6 +234,11 @@ export default function AuthPage({ mode = "login" }) {
                 {errors.password && (
                   <span className="error-text">{errors.password}</span>
                 )}
+                <div className="forgot-password-row">
+                  <Link to="/forgot-password" className="forgot-password-link">
+                    Forgot password?
+                  </Link>
+                </div>
               </div>
             </>
           ) : (
