@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { WS_URL } from "../config";
 
 /**
  * WebSocket hook for real-time game communication.
@@ -24,10 +25,7 @@ export function useWebSocket(gameCode, token, onMessage) {
   const connect = useCallback(() => {
     if (!gameCode || !token) return;
 
-    // Determine ws/wss based on current protocol
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.host;
-    const url = `${protocol}//${host}/ws/game/${gameCode}?token=${token}`;
+    const url = `${WS_URL}/ws/game/${gameCode}?token=${token}`;
 
     try {
       const ws = new WebSocket(url);

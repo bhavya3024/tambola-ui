@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 /**
  * Hook providing an authenticated fetch wrapper.
@@ -21,7 +22,7 @@ export function useApi() {
       }
 
       try {
-        const res = await fetch(url, { ...options, headers });
+        const res = await fetch(`${API_URL}${url}`, { ...options, headers });
         const data = await res.json();
 
         if (!res.ok && data.message) {
