@@ -1,5 +1,6 @@
 .number-board {
   padding: var(--space-lg);
+  flex-shrink: 0;
 }
 
 .number-board-title {

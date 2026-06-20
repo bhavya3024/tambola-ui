@@ -163,7 +163,6 @@ export default function GamePage() {
     }
   };
 
-  const handleStartGame = () => send({ action: "start_game" });
   const handlePauseGame = () => send({ action: "pause_game" });
   const handleResumeGame = () => send({ action: "resume_game" });
 
@@ -246,11 +245,6 @@ export default function GamePage() {
             {/* Host controls */}
             {isHost && (
               <div className="host-controls">
-                {isWaiting && tickets.length > 0 && (
-                  <button className="btn btn-emerald" onClick={handleStartGame}>
-                    ▶ Start Game
-                  </button>
-                )}
                 {game.status === "in_progress" && (
                   <button className="btn btn-secondary" onClick={handlePauseGame}>
                     ⏸ Pause
@@ -330,8 +324,30 @@ export default function GamePage() {
           {isPlaying && (
             <div className="game-playing animate-fade-in">
               <div className="playing-layout">
-                {/* Top row: Current number + Board */}
-                <div className="playing-top">
+                {/* Left: Tickets + Claims */}
+                <div className="playing-left">
+                  <h3 className="section-title">🎫 Your Tickets</h3>
+                  <div className="tickets-grid">
+                    {tickets.map((ticket, idx) => (
+                      <TicketCard
+                        key={ticket.id}
+                        ticket={ticket}
+                        calledNumbers={game.calledNumbers || []}
+                        ticketIndex={idx}
+                      />
+                    ))}
+                  </div>
+                  <ClaimPanel
+                    availablePatterns={game.availablePatterns || []}
+                    winners={game.winners || {}}
+                    tickets={tickets}
+                    onClaim={handleClaim}
+                    disabled={!connected}
+                  />
+                </div>
+
+                {/* Right: Current number + Board */}
+                <div className="playing-right">
                   <CurrentNumber
                     number={game.currentNumber}
                     calledNumbers={game.calledNumbers || []}
@@ -340,33 +356,6 @@ export default function GamePage() {
                     calledNumbers={game.calledNumbers || []}
                     currentNumber={game.currentNumber}
                   />
-                </div>
-
-                {/* Bottom row: Tickets + Claims */}
-                <div className="playing-bottom">
-                  <div className="playing-tickets">
-                    <h3 className="section-title">🎫 Your Tickets</h3>
-                    <div className="tickets-grid">
-                      {tickets.map((ticket, idx) => (
-                        <TicketCard
-                          key={ticket.id}
-                          ticket={ticket}
-                          calledNumbers={game.calledNumbers || []}
-                          ticketIndex={idx}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="playing-sidebar">
-                    <ClaimPanel
-                      availablePatterns={game.availablePatterns || []}
-                      winners={game.winners || {}}
-                      tickets={tickets}
-                      onClaim={handleClaim}
-                      disabled={!connected}
-                    />
-                  </div>
                 </div>
               </div>
             </div>

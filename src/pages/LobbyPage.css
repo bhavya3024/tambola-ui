@@ -65,6 +65,11 @@
   justify-content: flex-end;
 }
 
+.active-game-banner {
+  text-align: center;
+  border: 1px solid rgba(240, 192, 64, 0.25);
+}
+
 /* Games grid */
 .lobby-games {
   margin-bottom: var(--space-2xl);

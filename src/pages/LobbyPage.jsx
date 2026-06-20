@@ -16,12 +16,22 @@ export default function LobbyPage() {
   const [joinCode, setJoinCode] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState({
-    maxPlayers: 50,
-    numberCallInterval: 10,
+    maxPlayers: 2,
     ticketsPerPlayer: 1,
   });
   const [creating, setCreating] = useState(false);
   const [joining, setJoining] = useState(false);
+  const [activeGame, setActiveGame] = useState(null);
+
+  // Check if user is already in an active game
+  const fetchActiveGame = useCallback(async () => {
+    const { ok, data } = await get("/api/games/active");
+    if (ok && data?.data?.activeGame) {
+      setActiveGame(data.data.activeGame);
+    } else {
+      setActiveGame(null);
+    }
+  }, [get]);
 
   // Fetch available games
   const fetchGames = useCallback(async () => {
@@ -33,8 +43,9 @@ export default function LobbyPage() {
   }, [get]);
 
   useEffect(() => {
+    fetchActiveGame();
     fetchGames();
-  }, [fetchGames]);
+  }, [fetchActiveGame, fetchGames]);
 
   // Create a new game
   const handleCreate = async (e) => {
@@ -84,7 +95,26 @@ export default function LobbyPage() {
             </p>
           </div>
 
-          {/* Action cards */}
+          {/* Active game banner */}
+          {activeGame ? (
+            <div className="lobby-actions animate-slide-up">
+              <div className="action-card glass-card active-game-banner" style={{ gridColumn: "1 / -1" }}>
+                <div className="action-icon">🎮</div>
+                <h3>You're in an active game!</h3>
+                <p className="text-muted">
+                  You're currently part of game <strong className="text-gold">{activeGame.code}</strong>.
+                  Finish or leave it before creating or joining another.
+                </p>
+                <button
+                  className="btn btn-primary btn-block"
+                  onClick={() => navigate(`/game/${activeGame.code}`)}
+                >
+                  Return to Game →
+                </button>
+              </div>
+            </div>
+          ) : (
+          /* Action cards */
           <div className="lobby-actions animate-slide-up">
             {/* Join by code */}
             <div className="action-card glass-card">
@@ -143,23 +173,7 @@ export default function LobbyPage() {
                       }
                     />
                   </div>
-                  <div className="input-group">
-                    <label htmlFor="interval-input">Number Call Interval (seconds)</label>
-                    <input
-                      id="interval-input"
-                      className="input"
-                      type="number"
-                      min={3}
-                      max={30}
-                      value={createForm.numberCallInterval}
-                      onChange={(e) =>
-                        setCreateForm({
-                          ...createForm,
-                          numberCallInterval: parseInt(e.target.value) || 10,
-                        })
-                      }
-                    />
-                  </div>
+
                   <div className="input-group">
                     <label htmlFor="tickets-per-player-input">Tickets Per Player</label>
                     <div className="tickets-slider-group">
@@ -205,7 +219,7 @@ export default function LobbyPage() {
               )}
             </div>
           </div>
-
+          )}
           {/* Available games */}
           <div className="lobby-games animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <h2>Available Games</h2>
