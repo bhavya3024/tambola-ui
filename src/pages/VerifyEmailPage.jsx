@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { API_URL } from "../config";
 import "./VerifyEmailPage.css";
@@ -9,6 +9,7 @@ export default function VerifyEmailPage() {
 
   const [status, setStatus] = useState("verifying"); // verifying | success | error
   const [message, setMessage] = useState("");
+  const verifyAttempted = useRef(false);
 
   useEffect(() => {
     if (!token) {
@@ -16,6 +17,9 @@ export default function VerifyEmailPage() {
       setMessage("No verification token found. Please check the link in your email.");
       return;
     }
+
+    if (verifyAttempted.current) return;
+    verifyAttempted.current = true;
 
     const verify = async () => {
       try {
