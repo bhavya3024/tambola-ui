@@ -57,7 +57,11 @@ export async function sendEmailViaMailerSend({
     throw new Error("MAILERSEND_API_KEY is not set");
   }
 
-  const senderEmail = env.MAILERSEND_SENDER_EMAIL || env.SMTP_FROM.replace(/.*<([^>]+)>.*/, "$1");
+  let senderEmail = env.MAILERSEND_SENDER_EMAIL || env.SMTP_FROM.replace(/.*<([^>]+)>.*/, "$1");
+  if (senderEmail && !senderEmail.includes("@")) {
+    senderEmail = `MS_EMAIL@${senderEmail}`;
+  }
+
   const senderName = env.MAILERSEND_SENDER_NAME || "Tambola";
 
   const res = await fetch("https://api.mailersend.com/v1/email", {
@@ -110,7 +114,11 @@ export async function sendVerificationEmail(
   `;
 
   if (env.MAILERSEND_API_KEY) {
-    return sendEmailViaMailerSend({ to, toName: displayName, subject, html });
+    try {
+      return await sendEmailViaMailerSend({ to, toName: displayName, subject, html });
+    } catch (err: any) {
+      console.warn("⚠️ MailerSend API failed, falling back to Nodemailer/Ethereal:", err.message);
+    }
   }
 
   const transport = await getTransporter();
@@ -143,7 +151,11 @@ export async function sendPasswordResetEmail(
   `;
 
   if (env.MAILERSEND_API_KEY) {
-    return sendEmailViaMailerSend({ to, toName: displayName, subject, html });
+    try {
+      return await sendEmailViaMailerSend({ to, toName: displayName, subject, html });
+    } catch (err: any) {
+      console.warn("⚠️ MailerSend API failed, falling back to Nodemailer/Ethereal:", err.message);
+    }
   }
 
   const transport = await getTransporter();
