@@ -22,6 +22,11 @@ export const env = {
   SMTP_PASS: process.env.SMTP_PASS || "",
   SMTP_FROM: process.env.SMTP_FROM || SMTP.DEFAULT_FROM,
 
+  // MailerSend API
+  MAILERSEND_API_KEY: process.env.MAILERSEND_API_KEY || "",
+  MAILERSEND_SENDER_EMAIL: process.env.MAILERSEND_SENDER_EMAIL || "",
+  MAILERSEND_SENDER_NAME: process.env.MAILERSEND_SENDER_NAME || "Tambola",
+
   // Frontend URL
   FRONTEND_URL: process.env.FRONTEND_URL || DEFAULT_FRONTEND_URL,
 } as const;
