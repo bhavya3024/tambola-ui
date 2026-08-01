@@ -1,23 +1,16 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { WS_URL } from "../config";
+import { API_URL } from "../config";
 
 /**
- * WebSocket hook for real-time game communication.
- * Connects to /ws/game/:code?token=<JWT>
- *
- * @param {string} gameCode - The game room code
- * @param {string} token - JWT access token
- * @param {function} onMessage - Callback for incoming messages
- * @returns {{ send, connected, error }}
+ * Real-time gameplay hook using Server-Sent Events (SSE) stream & HTTP Action endpoints.
+ * Compatible with Next.js App Router serverless & standard node deployments.
  */
 export function useWebSocket(gameCode, token, onMessage) {
-  const wsRef = useRef(null);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState(null);
-  const reconnectTimeoutRef = useRef(null);
+  const eventSourceRef = useRef(null);
   const onMessageRef = useRef(onMessage);
 
-  // Keep onMessage ref current
   useEffect(() => {
     onMessageRef.current = onMessage;
   }, [onMessage]);
@@ -25,71 +18,73 @@ export function useWebSocket(gameCode, token, onMessage) {
   const connect = useCallback(() => {
     if (!gameCode || !token) return;
 
-    const url = `${WS_URL}/ws/game/${gameCode}?token=${token}`;
+    const streamUrl = `${API_URL}/api/games/${gameCode}/stream?token=${token}`;
 
     try {
-      const ws = new WebSocket(url);
-      wsRef.current = ws;
+      const es = new EventSource(streamUrl);
+      eventSourceRef.current = es;
 
-      ws.onopen = () => {
+      es.onopen = () => {
         setConnected(true);
         setError(null);
-        console.log(`🔌 WebSocket connected to game ${gameCode}`);
+        console.log(`🔌 SSE connected to game ${gameCode}`);
       };
 
-      ws.onmessage = (event) => {
+      es.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           onMessageRef.current?.(data);
         } catch (err) {
-          console.error("Failed to parse WebSocket message:", err);
+          console.error("Failed to parse SSE message:", err);
         }
       };
 
-      ws.onerror = (err) => {
-        console.error("WebSocket error:", err);
-        setError("Connection error");
-      };
-
-      ws.onclose = (event) => {
+      es.onerror = (err) => {
+        console.error("SSE connection error:", err);
         setConnected(false);
-        wsRef.current = null;
-
-        // Auto-reconnect if not a clean close
-        if (event.code !== 1000 && event.code !== 1001) {
-          console.log("🔄 Reconnecting in 3s...");
-          reconnectTimeoutRef.current = setTimeout(connect, 3000);
-        }
+        setError("Connection error");
       };
     } catch (err) {
       setError("Failed to connect");
-      console.error("WebSocket connection failed:", err);
+      console.error("SSE connection failed:", err);
     }
   }, [gameCode, token]);
 
-  // Connect on mount, disconnect on unmount
   useEffect(() => {
     connect();
 
     return () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (wsRef.current) {
-        wsRef.current.close(1000);
-        wsRef.current = null;
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
     };
   }, [connect]);
 
-  // Send a message
-  const send = useCallback((data) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(data));
-    } else {
-      console.warn("WebSocket not connected, cannot send:", data);
-    }
-  }, []);
+  const send = useCallback(
+    async (data) => {
+      try {
+        const res = await fetch(`${API_URL}/api/games/${gameCode}/action`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
+        const resData = await res.json();
+        if (!res.ok) {
+          onMessageRef.current?.({
+            type: "error",
+            data: { message: resData.message || "Action failed" },
+          });
+        }
+      } catch (err) {
+        console.error("Failed to send action:", err);
+      }
+    },
+    [gameCode, token]
+  );
 
   return { send, connected, error };
 }

@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useRouter } from "next/navigation";
 import "./GameCard.css";
 
 const PATTERN_LABELS = {
@@ -10,12 +12,12 @@ const PATTERN_LABELS = {
 };
 
 export default function GameCard({ game }) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div
       className="game-card glass-card animate-slide-up"
-      onClick={() => navigate(`/game/${game.code}`)}
+      onClick={() => router.push(`/game/${game.code}`)}
     >
       <div className="game-card-header">
         <div className="game-code-wrapper">

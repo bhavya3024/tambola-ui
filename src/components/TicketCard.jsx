@@ -4,8 +4,9 @@ import "./TicketCard.css";
  * Renders a single Tambola ticket as a 3×9 grid.
  * Numbers that have been called are auto-marked.
  */
-export default function TicketCard({ ticket, calledNumbers = [], ticketIndex = 0 }) {
+export default function TicketCard({ ticket, calledNumbers = [], ticketIndex = 0, ticketNumber }) {
   const calledSet = new Set(calledNumbers);
+  const displayNum = ticketNumber !== undefined ? ticketNumber : ticketIndex + 1;
 
   // Count how many numbers on this ticket have been called
   const totalNumbers = ticket.grid.flat().filter((n) => n > 0).length;
@@ -14,7 +15,7 @@ export default function TicketCard({ ticket, calledNumbers = [], ticketIndex = 0
   return (
     <div className="ticket-card glass-card animate-slide-up" style={{ animationDelay: `${ticketIndex * 0.1}s` }}>
       <div className="ticket-header">
-        <span className="ticket-label">Ticket #{ticketIndex + 1}</span>
+        <span className="ticket-label">Ticket #{displayNum}</span>
         <span className="ticket-progress">
           {markedCount}/{totalNumbers}
         </span>

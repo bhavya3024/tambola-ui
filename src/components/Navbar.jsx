@@ -1,18 +1,21 @@
+"use client";
+
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import "./Navbar.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <nav className="navbar">
       <div className="navbar-inner container">
-        <div className="navbar-brand" onClick={() => navigate("/")}>
+        <Link href="/" className="navbar-brand">
           <div className="navbar-logo">🎯</div>
           <span className="navbar-title">Tambola</span>
-        </div>
+        </Link>
 
         {user && (
           <div className="navbar-right">
@@ -26,7 +29,7 @@ export default function Navbar() {
             </div>
             <button
               className="btn btn-secondary btn-sm navbar-history-btn"
-              onClick={() => navigate("/history")}
+              onClick={() => router.push("/history")}
               title="Game History"
             >
               📜 History

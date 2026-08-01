@@ -1,25 +1,30 @@
 .ticket-card {
-  padding: var(--space-md);
-  min-width: 0;
+  padding: 14px 16px;
+  flex: 1 1 340px;
+  min-width: 300px;
+  background: rgba(20, 24, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-md);
 }
 
 .ticket-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 10px;
 }
 
 .ticket-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .ticket-progress {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--cyan);
 }
@@ -27,41 +32,42 @@
 .ticket-grid {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  background: rgba(0, 0, 0, 0.3);
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.45);
   border-radius: var(--radius-sm);
-  padding: 3px;
+  padding: 6px;
 }
 
 .ticket-row {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  gap: 3px;
+  gap: 4px;
 }
 
 .ticket-cell {
   position: relative;
-  aspect-ratio: 1.3;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
   transition: all var(--transition-normal);
   user-select: none;
 }
 
 .ticket-cell.empty {
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .ticket-cell.marked {
-  background: linear-gradient(135deg, rgba(0, 230, 118, 0.2), rgba(0, 229, 255, 0.15));
-  color: var(--emerald);
-  border: 1px solid rgba(0, 230, 118, 0.3);
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.3), rgba(0, 229, 255, 0.2));
+  color: #00ff88;
+  border: 1px solid rgba(0, 230, 118, 0.45);
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
   animation: numberPop 0.3s ease;
 }
 
@@ -69,18 +75,18 @@
   position: absolute;
   top: 3px;
   right: 3px;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--emerald);
   box-shadow: 0 0 6px var(--emerald-glow);
 }
 
 .ticket-progress-bar {
-  height: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 2px;
-  margin-top: var(--space-sm);
+  margin-top: 10px;
   overflow: hidden;
 }
 
@@ -91,9 +97,13 @@
   transition: width 0.5s ease;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .ticket-card {
+    min-width: 100%;
+    padding: 10px;
+  }
   .ticket-cell {
-    font-size: 0.7rem;
-    aspect-ratio: 1.1;
+    height: 32px;
+    font-size: 0.85rem;
   }
 }
