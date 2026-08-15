@@ -28,5 +28,11 @@ export const env = {
   MAILERSEND_SENDER_NAME: process.env.MAILERSEND_SENDER_NAME || "Tambola",
 
   // Frontend URL
-  FRONTEND_URL: process.env.FRONTEND_URL || DEFAULT_FRONTEND_URL,
+  FRONTEND_URL:
+    process.env.FRONTEND_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : DEFAULT_FRONTEND_URL),
 } as const;

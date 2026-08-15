@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { API_URL } from "../config";
 
 /**
  * Real-time gameplay hook using Server-Sent Events (SSE) stream & HTTP Action endpoints.
@@ -18,7 +17,7 @@ export function useWebSocket(gameCode, token, onMessage) {
   const connect = useCallback(() => {
     if (!gameCode || !token) return;
 
-    const streamUrl = `${API_URL}/api/games/${gameCode}/stream?token=${token}`;
+    const streamUrl = `/api/games/${gameCode}/stream?token=${token}`;
 
     try {
       const es = new EventSource(streamUrl);
@@ -64,7 +63,7 @@ export function useWebSocket(gameCode, token, onMessage) {
   const send = useCallback(
     async (data) => {
       try {
-        const res = await fetch(`${API_URL}/api/games/${gameCode}/action`, {
+        const res = await fetch(`/api/games/${gameCode}/action`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

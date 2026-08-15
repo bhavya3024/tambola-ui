@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { API_URL } from "../config";
 
 export function useApi() {
   const { getAccessToken, showToast } = useAuth();
@@ -18,8 +17,8 @@ export function useApi() {
       }
 
       const fullUrl = url.startsWith("/api")
-        ? `${API_URL}${url}`
-        : `${API_URL}/api${url.startsWith("/") ? "" : "/"}${url}`;
+        ? url
+        : `/api${url.startsWith("/") ? "" : "/"}${url}`;
 
       try {
         const res = await fetch(fullUrl, { ...options, headers });

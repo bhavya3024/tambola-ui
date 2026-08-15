@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { API_URL } from "../../config";
 import "@/styles/VerifyEmailPage.css";
 
 function VerifyEmailContent() {
@@ -26,7 +25,7 @@ function VerifyEmailContent() {
 
     const verify = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/verify-email`, {
+        const res = await fetch("/api/auth/verify-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
