@@ -139,6 +139,7 @@ export async function sendPasswordResetEmail(
   token: string,
   displayName: string
 ) {
+  const tag = "[sendPasswordResetEmail]";
   const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${token}`;
   const subject = "Reset your password - Tambola";
   const html = `
@@ -151,13 +152,12 @@ export async function sendPasswordResetEmail(
   `;
 
   if (env.MAILERSEND_API_KEY) {
-    try {
-      return await sendEmailViaMailerSend({ to, toName: displayName, subject, html });
-    } catch (err: any) {
-      console.warn("⚠️ MailerSend API failed, falling back to Nodemailer/Ethereal:", err.message);
-    }
+    console.log(`${tag} Sending via MailerSend to: ${to}`);
+    // Do NOT fall back silently — let the caller handle the error
+    return await sendEmailViaMailerSend({ to, toName: displayName, subject, html });
   }
 
+  console.log(`${tag} MAILERSEND_API_KEY not set, using Nodemailer/Ethereal for: ${to}`);
   const transport = await getTransporter();
   const info = await transport.sendMail({
     from: env.SMTP_FROM,
@@ -167,6 +167,6 @@ export async function sendPasswordResetEmail(
   });
 
   if (nodemailer.getTestMessageUrl(info)) {
-    console.log("✉️ Password reset email preview:", nodemailer.getTestMessageUrl(info));
+    console.log(`${tag} Password reset email preview:`, nodemailer.getTestMessageUrl(info));
   }
 }
